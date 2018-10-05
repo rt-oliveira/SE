@@ -1,6 +1,6 @@
 #include <Servo.h>
 
-/* Tarefa 03 - Construir uma aplicação que tenha dois sensores,
+/* Tarefa 02 - Construir uma aplicação que tenha dois sensores,
  *  dois atuadores e contato direto por GPIO.
  *  
  *  Componentes da aplicação: há um led, um botão, um joystick
