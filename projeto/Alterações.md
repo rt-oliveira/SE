@@ -50,4 +50,4 @@
  ---
  # Próximos passos do Projeto Final
  
- [x] Adicionar RTC para mostrar tempo de uma partida de futebol.
+ - [x] Adicionar RTC para mostrar tempo de uma partida de futebol.
