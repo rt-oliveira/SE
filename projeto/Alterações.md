@@ -39,14 +39,14 @@
 		2. Caso esteja "no intervalo", volta o jogo, começando a contar o 2º tempo;
 		3. E caso esteja no 2º tempo, acaba o jogo. Caso alguém esteja na frente, faz-se o mesmo protocolo de vitória; caso termine empatado, os LEDs das duas equipes piscam para sempre, e o placar fica inalterado.
 9. Componentes que estão sendo usados:
-  - 1 Arduino Mega;
-  - 8 LEDs pequenos vermelhos;
-  - 2 LEDs "normais" (ou grandes) amarelos;
-  - 1 Controle Remoto
-  - 2 Displays de 7 segmentos, de 2 dígitos cada;
-  - 1 CI especializado em displays;
-  - 1 Receptor de Infravermelho;
-  - 1 RTC (Real Time Clock).
+	- 1 Arduino Mega;
+  	- 8 LEDs pequenos vermelhos;
+  	- 2 LEDs "normais" (ou grandes) amarelos;
+  	- 1 Controle Remoto
+  	- 2 Displays de 7 segmentos, de 2 dígitos cada;
+  	- 1 CI especializado em displays;
+  	- 1 Receptor de Infravermelho;
+  	- 1 RTC (Real Time Clock).
  ---
  # Próximos passos do Projeto Final
  
