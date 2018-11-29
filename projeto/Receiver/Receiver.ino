@@ -9,10 +9,8 @@ volatile decode_results result;
 LedControl lc = LedControl(10, 9, 8, 1);
 
 int comando;
-bool ja_roda = false;
-Volei v(lc);
-Futebol f(lc);
-Basquete b(lc);
+volatile bool tem_comando;
+int pin_int;
 Esporte* e = NULL;
 
 void setup() {
@@ -29,38 +27,47 @@ void setup() {
   pinMode(65, OUTPUT);
   pinMode(66, OUTPUT);
   irrec.enableIRIn();
-  attachInterrupt(digitalPinToInterrupt(2), LerIR, CHANGE);
+  tem_comando = false;
+  pin_int = digitalPinToInterrupt(2);
+  attachInterrupt(pin_int, LerIR, RISING);
 }
 
 void loop() {
   if (e != NULL && e->situacao_jogo != 0) {
     detachInterrupt(0);
-    e->vitoria(lc);
+    e->vitoria();
+  }
+  else {
+    if (tem_comando) {
+      detachInterrupt(pin_int);
+      comando = result.value;
+      if (e == NULL) {
+        switch (comando) {
+          case 0xA25D: // CH-
+            e = new Volei(lc);
+            break;
+          case 0x629D: // CH
+            e = new Futebol(lc);
+            break;
+          case 0xE21D: // CH+
+            e = new Basquete(lc);
+            break;
+        }
+        e->iniciarJogo();
+      } else {
+        e->Jogo(comando);
+      }
+      tem_comando = false;
+      attachInterrupt(pin_int, LerIR, RISING);
+    }
   }
 }
 
 void LerIR() {
-  sei();
-  if (irrec.decode(&result) && !ja_roda) {
-    ja_roda = true;
-    comando = result.value;
-    if (e == NULL) {
-      switch (comando) {
-        case 0xA25D:
-          e = &v;
-          break;
-        case 0x629D:
-          e = &f;
-          break;
-        case 0xE21D:
-          e = &b;
-          break;
-      }
-      e->iniciarJogo(lc);
-    } else {
-      e->Jogo(comando, lc);
+  if (!tem_comando) {
+    if (irrec.decode(&result)) {
+      tem_comando = true;
+      irrec.resume();
     }
-    irrec.resume();
-    ja_roda = false;
   }
 }

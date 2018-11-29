@@ -2,57 +2,57 @@
 #include "LedControl.h"
 #include "Esporte.h"
 
-void Esporte::zerarDisplays(LedControl lc) {
-  lc.setDigit(0, 0, 0, false);
-  lc.setDigit(0, 1, 0, false);
-  lc.setDigit(0, 2, 0, false);
-  lc.setDigit(0, 3, 0, false);
+void Esporte::zerarDisplays() {
+  (*lc).setDigit(0, 0, 0, false);
+  (*lc).setDigit(0, 1, 0, false);
+  (*lc).setDigit(0, 2, 0, false);
+  (*lc).setDigit(0, 3, 0, false);
 }
 
-void Esporte::iniciarJogo(LedControl lc) {
+void Esporte::iniciarJogo() {
   iluminarTds(HIGH);
-  lc.clearDisplay(0);
+  (*lc).clearDisplay(0);
   delay(500);
-  lc.setDigit(0, 0, 8, false);
-  lc.setDigit(0, 1, 8, false);
-  lc.setDigit(0, 2, 8, false);
-  lc.setDigit(0, 3, 8, false);
+  (*lc).setDigit(0, 0, 8, false);
+  (*lc).setDigit(0, 1, 8, false);
+  (*lc).setDigit(0, 2, 8, false);
+  (*lc).setDigit(0, 3, 8, false);
   delay(1000);
-  zerarDisplays(lc);
+  zerarDisplays();
   iluminarTds(LOW);
   tempo = 1;
   clock.begin();
   clock.setDateTime(2018, 1, 1, 0, 0, 0);
 }
 
-void Esporte::protocoloDisplay(LedControl lc) {
-  lc.shutdown(0, false); // Habilita o display
-  lc.setIntensity(0, 10); // Luminosidade (0 a 15)
-  zerarDisplays(lc);
+void Esporte::protocoloDisplay() {
+  (*lc).shutdown(0, false); // Habilita o display
+  (*lc).setIntensity(0, 10); // Luminosidade (0 a 15)
+  zerarDisplays();
 }
 
-void Esporte::vitoria(LedControl lc) {
+void Esporte::vitoria() {
   iluminarTds(LOW);
   if (situacao_jogo == 1) {
-    lc.clearDisplay(0);
+    (*lc).clearDisplay(0);
     while (1) {
       iluminarEsq(HIGH);
-      lc.setDigit(0, 0, 8, false);
-      lc.setDigit(0, 1, 8, false);
+      (*lc).setDigit(0, 0, 8, false);
+      (*lc).setDigit(0, 1, 8, false);
       delay(1000);
       iluminarEsq(LOW);
-      lc.clearDisplay(0);
+      (*lc).clearDisplay(0);
       delay(1000);
     }
   } else if (situacao_jogo == 2) {
-    lc.clearDisplay(0);
+    (*lc).clearDisplay(0);
     while (1) {
       iluminarDir(HIGH);
-      lc.setDigit(0, 2, 8, false);
-      lc.setDigit(0, 3, 8, false);
+      (*lc).setDigit(0, 2, 8, false);
+      (*lc).setDigit(0, 3, 8, false);
       delay(1000);
       iluminarDir(LOW);
-      lc.clearDisplay(0);
+      (*lc).clearDisplay(0);
       delay(1000);
     }
   } else {

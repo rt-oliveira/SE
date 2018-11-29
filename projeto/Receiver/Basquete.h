@@ -8,12 +8,12 @@
 class Basquete: public Esporte {
   public:
     Basquete(LedControl);
-    void Jogo(int,LedControl);
+    void Jogo(int);
   private:
     unsigned int pontos[2],faltas_periodo[2];
     unsigned short periodo;
     // Procedimentos e Funções
-    void Pontos(short,short,LedControl);
+    void Pontos(short,short);
     void Falta(short);
     void iluminarLEDs();
 };
