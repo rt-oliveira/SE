@@ -14,16 +14,15 @@ class Esporte {
       1 - Vitória da Equipe 1
       2 - Vitória da Equipe 2
       3 - Empate */
-    void iniciarJogo();
-    void vitoria();
-    virtual void Jogo(int);
+    void iniciarJogo(LedControl);
+    void vitoria(LedControl);
+    virtual void Jogo(bool&,int&,LedControl);
   protected:
     unsigned short tempo;
     DS3231 clock;
     RTCDateTime dt;
-    LedControl* lc;
-    void zerarDisplays();
-    void protocoloDisplay();
+    void zerarDisplays(LedControl);
+    void protocoloDisplay(LedControl);
     void iluminarTds(int);
     void iluminarEsq(int);
     void iluminarDir(int);

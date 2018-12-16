@@ -15,32 +15,36 @@ void Futebol::iluminarLEDs() {
   digitalWrite(65, expulsos[1] >= 4);
 }
 
-void Futebol::Jogo(int comando) {
-  switch (comando) {
-    case 0x30CF: // 1
-      if (tempo <= 2)  gol(0);
-      break;
-    case 0x18E7: // 2
-      if (tempo <= 2)  tirarGol(0);
-      break;
-    case 0x7A85: // 3
-      if (tempo <= 2)  expulso(0);
-      break;
-    case 0x10EF: // 4
-      if (tempo <= 2)  gol(1);
-      break;
-    case 0x38C7: // 5
-      if (tempo <= 2)  tirarGol(1);
-      break;
-    case 0x5AA5: // 6
-      if (tempo <= 2)  expulso(1);
-      break;
-    case 0xC23D: // Play/Pause
-      if (tempo <= 2)  mostrarTempo();
-      break;
-    case 0x906F: // Botão EQ
-      mudarTempo();
-      break;
+void Futebol::Jogo(bool& t, int& comando,LedControl lc) {
+  if (t) {
+    switch (comando) {
+      case 0x30CF: // 1
+        if (tempo <= 2)  gol(0,lc);
+        break;
+      case 0x18E7: // 2
+        if (tempo <= 2)  tirarGol(0,lc);
+        break;
+      case 0x7A85: // 3
+        if (tempo <= 2)  expulso(0);
+        break;
+      case 0x10EF: // 4
+        if (tempo <= 2)  gol(1,lc);
+        break;
+      case 0x38C7: // 5
+        if (tempo <= 2)  tirarGol(1,lc);
+        break;
+      case 0x5AA5: // 6
+        if (tempo <= 2)  expulso(1);
+        break;
+      case 0xC23D: // Play/Pause
+        if (tempo <= 2)  mostrarTempo(lc);
+        break;
+      case 0x906F: // Botão EQ
+        mudarTempo();
+        break;
+    }
+    t = false;
+    comando = 0;
   }
 }
 
@@ -65,15 +69,15 @@ void Futebol::mudarTempo() {
   iluminarLEDs();
 }
 
-void Futebol::tirarGol(short i) {
+void Futebol::tirarGol(short i,LedControl lc) {
   if (gols[i] >= 1) {
     gols[i]--;
-    (*lc).setDigit(0, (2 * i), gols[i] / 10, false);
-    (*lc).setDigit(0, (2 * i) + 1, gols[i] % 10, false);
+    lc.setDigit(0, (2 * i), gols[i] / 10, false);
+    lc.setDigit(0, (2 * i) + 1, gols[i] % 10, false);
   }
 }
 
-void Futebol::gol(short i) {
+void Futebol::gol(short i,LedControl lc) {
   gols[i]++;
   for (int j = 0; j <= 5; j++) {
     if (i == 0) {
@@ -89,8 +93,8 @@ void Futebol::gol(short i) {
       delay(200);
     }
   }
-  (*lc).setDigit(0, (2 * i), gols[i] / 10, false);
-  (*lc).setDigit(0, (2 * i) + 1, gols[i] % 10, false);
+  lc.setDigit(0, (2 * i), gols[i] / 10, false);
+  lc.setDigit(0, (2 * i) + 1, gols[i] % 10, false);
   iluminarLEDs();
 }
 
@@ -112,32 +116,32 @@ void Futebol::fimDeJogo() {
 }
 
 Futebol::Futebol(LedControl l) {
-  lc=&l;
   gols[0] = 0;
   gols[1] = 0;
   expulsos[0] = 0;
   expulsos[1] = 0;
   situacao_jogo = 0;
-  protocoloDisplay();
+  protocoloDisplay(l);
   iluminarLEDs();
+  Esporte::iniciarJogo(l);
 }
 
-void Futebol::mostrarTempo() {
+void Futebol::mostrarTempo(LedControl lc) {
   short mins = clock.getDateTime().minute;
   short secs;
   iluminarTds(HIGH);
-  (*lc).setDigit(0, 0, mins / 10, false);
-  (*lc).setDigit(0, 1, mins % 10, false);
+  lc.setDigit(0, 0, mins / 10, false);
+  lc.setDigit(0, 1, mins % 10, false);
   for (int j = 0; j <= 5; j++) {
     secs = clock.getDateTime().second;
-    (*lc).setDigit(0, 2, secs / 10, false);
-    (*lc).setDigit(0, 3, secs % 10, false);
+    lc.setDigit(0, 2, secs / 10, false);
+    lc.setDigit(0, 3, secs % 10, false);
     delay(1000);
   }
   iluminarTds(LOW);
   iluminarLEDs();
-  (*lc).setDigit(0, 0, gols[0] / 10, false);
-  (*lc).setDigit(0, 1, gols[0] % 10, false);
-  (*lc).setDigit(0, 2, gols[1] / 10, false);
-  (*lc).setDigit(0, 3, gols[1] % 10, false);
+  lc.setDigit(0, 0, gols[0] / 10, false);
+  lc.setDigit(0, 1, gols[0] % 10, false);
+  lc.setDigit(0, 2, gols[1] / 10, false);
+  lc.setDigit(0, 3, gols[1] % 10, false);
 }

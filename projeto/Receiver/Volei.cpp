@@ -23,7 +23,7 @@ bool Volei::ganhouSetEqDois() {
   return pontos_min && diferenca;
 }
 
-void Volei::ganhouJogo(short i) {
+void Volei::ganhouJogo(short i,LedControl lc) {
   if (sets[i] == 3)
     situacao_jogo = i + 1;
   else {
@@ -33,85 +33,89 @@ void Volei::ganhouJogo(short i) {
     pontos2 = 0;
     digitalWrite(58, LOW);
     digitalWrite(66, LOW);
-    zerarDisplays();
+    zerarDisplays(lc);
     iluminarLEDs();
   }
 }
 
-void Volei::Jogo(int comando) {
-  switch (comando) {
-    case 0x30CF:
-      pontoMaisTime1();
-      break;
-    case 0x18E7:
-      pontoMenosTime1();
-      break;
-    case 0x7A85:
-      pontoMaisTime2();
-      break;
-    case 0x10EF:
-      pontoMenosTime2();
-      break;
+void Volei::Jogo(bool& t, int& comando,LedControl lc) {
+  if (t) {
+    switch (comando) {
+      case 0x30CF:
+        pontoUm(1,lc);
+        break;
+      case 0x18E7:
+        pontoUm(-1,lc);
+        break;
+      case 0x7A85:
+        pontoDois(1,lc);
+        break;
+      case 0x10EF:
+        pontoDois(-1,lc);
+        break;
+    }
+    t = false;
+    comando = 0;
   }
 }
 
-void Volei::pontoMaisTime1() {
-  pontos1++;
-  (*lc).setDigit(0, 0, pontos1 / 10, false);
-  (*lc).setDigit(0, 1, pontos1 % 10, false);
-  digitalWrite(58, HIGH);
-  digitalWrite(66, LOW);
-  if (ganhouSetEqUm()) {
-    delay(4000);
-    sets[0]++;
-    ganhouJogo(0);
-  }
-  else
-    iluminarLEDs();
-}
-
-void Volei::pontoMaisTime2() {
-  pontos2++;
-  (*lc).setDigit(0, 2, pontos2 / 10, false);
-  (*lc).setDigit(0, 3, pontos2 % 10, false);
-  digitalWrite(58, LOW);
-  digitalWrite(66, HIGH);
-  if (ganhouSetEqDois()) {
-    delay(4000);
-    sets[1]++;
-    ganhouJogo(1);
-  }
-  else
-    iluminarLEDs();
-}
-
-void Volei::pontoMenosTime1() {
-  if (pontos1 >= 1) {
-    pontos1--;
-    (*lc).setDigit(0, 0, pontos1 / 10, false);
-    (*lc).setDigit(0, 1, pontos1 % 10, false);
-    digitalWrite(58, LOW);
+void Volei::pontoUm(short val,LedControl lc) {
+  if (val == 1) {
+    pontos1++;
+    lc.setDigit(0, 0, pontos1 / 10, false);
+    lc.setDigit(0, 1, pontos1 % 10, false);
+    digitalWrite(58, HIGH);
     digitalWrite(66, LOW);
+    if (ganhouSetEqUm()) {
+      delay(4000);
+      sets[0]++;
+      ganhouJogo(0,lc);
+    }
+    else
+      iluminarLEDs();
+  } else {
+    if (pontos1 >= 1) {
+      pontos1--;
+      lc.setDigit(0, 0, pontos1 / 10, false);
+      lc.setDigit(0, 1, pontos1 % 10, false);
+      digitalWrite(58, LOW);
+      digitalWrite(66, LOW);
+    }
   }
 }
 
-void Volei::pontoMenosTime2() {
-  if (pontos2 >= 1) {
-    pontos2--;
-    (*lc).setDigit(0, 2, pontos2 / 10, false);
-    (*lc).setDigit(0, 3, pontos2 % 10, false);
+void Volei::pontoDois(short val,LedControl lc) {
+  if (val == 1) {
+    pontos2++;
+    lc.setDigit(0, 2, pontos2 / 10, false);
+    lc.setDigit(0, 3, pontos2 % 10, false);
     digitalWrite(58, LOW);
-    digitalWrite(66, LOW);
+    digitalWrite(66, HIGH);
+    if (ganhouSetEqDois()) {
+      delay(4000);
+      sets[1]++;
+      ganhouJogo(1,lc);
+    }
+    else
+      iluminarLEDs();
+  } else {
+    if (pontos2 >= 1) {
+      pontos2--;
+      lc.setDigit(0, 2, pontos2 / 10, false);
+      lc.setDigit(0, 3, pontos2 % 10, false);
+      digitalWrite(58, LOW);
+      digitalWrite(66, LOW);
+    }
   }
 }
 
 Volei::Volei(LedControl l) {
-  lc=&l;
   sets[0] = 0;
   sets[1] = 0;
   pontos1 = 0;
   pontos2 = 0;
   p_set = 25;
   situacao_jogo = 0;
-  protocoloDisplay();
+  protocoloDisplay(l);
+  Esporte::iniciarJogo(l);
 }

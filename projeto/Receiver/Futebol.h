@@ -8,9 +8,8 @@
 class Futebol: public Esporte {
   public:
     Futebol(LedControl);
-    void Jogo(int);
+    void Jogo(bool&,int&,LedControl);
     void iniciarJogo();
-    void mostrarTempo();
   private:
     unsigned short gols[2],expulsos[2];
     /* 1 - 1º Tempo
@@ -19,12 +18,13 @@ class Futebol: public Esporte {
      * 4 - Fim de Jogo
      */
     // Procedimentos e Funções
+    void mostrarTempo(LedControl);
     void mudarTempo();
     void iluminarLEDs();
     void fimDeJogo();
-    void gol(short);
+    void gol(short,LedControl);
     void expulso(short);
-    void tirarGol(short);
+    void tirarGol(short,LedControl);
 };
 
 #endif

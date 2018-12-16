@@ -8,7 +8,7 @@
 class Volei: public Esporte {
   public:
     Volei(LedControl);
-    void Jogo(int);
+    void Jogo(bool&,int&,LedControl);
   private:
     unsigned short sets[2];
     unsigned short pontos1, pontos2;
@@ -18,11 +18,9 @@ class Volei: public Esporte {
     void iluminarLEDs();
     bool ganhouSetEqUm();
     bool ganhouSetEqDois();
-    void ganhouJogo(short);
-    void pontoMaisTime1();
-    void pontoMaisTime2();
-    void pontoMenosTime1();
-    void pontoMenosTime2();
+    void ganhouJogo(short,LedControl);
+    void pontoUm(short,LedControl);
+    void pontoDois(short,LedControl);
 };
 
 #endif
